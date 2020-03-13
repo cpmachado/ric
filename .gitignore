@@ -1,0 +1,9 @@
+# Tarballs and binaries
+*.zip
+*.tar.gz
+*.o
+
+ric
+
+# user config.h
+config.h
