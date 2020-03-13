@@ -37,11 +37,10 @@ a bold and sarcastic manner of the one Rick.
 ## Usage
 
 ```shell
-  dkt is a Distributed Key Table server and client.
-  Usage: dkt [OPTIONS] IP PORT
+  ric is a RCI Internet Command.
+  Usage: ric [OPTIONS] [HOSTNAME:PORT]
   Options:
       -h          -- display help and exit
-      -v          -- display version and exit
       -v          -- display version and exit
      - n          -- hostname: Task 1
      - w          -- nslookup: Task 2
@@ -50,6 +49,9 @@ a bold and sarcastic manner of the one Rick.
      - l          -- multiplexes u and t to servers
        + u        -- udp_server: Task 9
        + t        -- tcp_server: Task 10, 11, 12
+  Default values:
+    Host: tejo.tecnico.ulisboa.pt
+    Port: 58001
 ```
 
 

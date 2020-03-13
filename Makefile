@@ -15,10 +15,9 @@ SRC= \
 PKGFILES=\
 	LICENSE\
 	Makefile\
-	README\
+	README.md\
 	config.def.h\
 	config.mk\
-	include\
 	man\
 	src
 
@@ -60,7 +59,7 @@ ric: ${OBJ}
 
 dist: clean
 	mkdir -p ric-${VERSION}
-	cp ${PKGFILES} ric-${VERSION}
+	cp -r ${PKGFILES} ric-${VERSION}
 	tar -cz  -f ric-${VERSION}.tar.gz ric-${VERSION}
 	rm -r ric-${VERSION}
 
