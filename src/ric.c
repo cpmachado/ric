@@ -6,32 +6,7 @@
 #include <string.h>
 
 #include "config.h"
-
-void
-usage(void) {
-	fprintf(stdout, "ric is a RCI Internet Command.\n");
-	fprintf(stdout, "Usage: ric [OPTIONS] [HOSTNAME:PORT]\n");
-	fprintf(stdout, "Options:\n");
-	fprintf(stdout, "    -h          -- display help and exit\n");
-	fprintf(stdout, "    -v          -- display version and exit\n");
-	fprintf(stdout, "   - n          -- hostname: Task 1\n");
-	fprintf(stdout, "   - w          -- nslookup: Task 2\n");
-	fprintf(stdout, "   - u          -- udp_client: Task 3, 4, 5\n");
-	fprintf(stdout, "   - t          -- tcp_client: Task 6, 7, 8\n");
-	fprintf(stdout, "   - l          -- multiplexes u and t to servers\n");
-	fprintf(stdout, "     + u        -- udp_server: Task 9\n");
-	fprintf(stdout, "     + t        -- tcp_server: Task 10, 11, 12\n");
-	fprintf(stdout, "Default values:\n");
-	fprintf(stdout, "  Host: " DEFAULT_DEST "\n");
-	fprintf(stdout, "  Port: " DEFAULT_PORT "\n");
-}
-
-void
-version(void) {
-	fprintf(stdout, "ric-" VERSION
-	        " Copyright © 2020 "
-	        ": Carlos Machado, Mariana Carvalho\n");
-}
+#include "util.h"
 
 int
 main(int argc, char *argv[]) {

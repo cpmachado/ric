@@ -4,7 +4,8 @@ include config.mk
 
 
 SRC= \
-	src/ric.c
+	src/ric.c\
+	src/util.c
 #	src/hname.c\
 #	src/nslook.c\
 #	src/udp_client.c\
@@ -24,7 +25,7 @@ PKGFILES=\
 OBJ= ${SRC:.c=.o}
 BIN= ric
 
-all: options ${BIN}
+all: ${BIN}
 	@echo "all built"
 
 clean:
@@ -47,6 +48,7 @@ config.h: config.def.h
 	cp config.def.h config.h
 
 src/ric.o: src/ric.c config.h
+src/util.o: src/util.c config.h
 src/hname.o: src/hname.c config.h
 src/udp_client.o: src/udp_client.c config.h
 src/tcp_client.o: src/tcp_client.c config.h
@@ -55,7 +57,7 @@ src/tcp_server.o: src/tcp_server.c config.h
 
 ric: ${OBJ}
 	@echo CC -o $@
-	@${CC} ${CFLAGS} -o $@ $^ ${LDFLAGS}
+	@${CC} -o $@ ${OBJ} ${LDFLAGS}
 
 dist: clean
 	mkdir -p ric-${VERSION}
