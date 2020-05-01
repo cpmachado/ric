@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "config.h"
+#include "ric.h"
 #include "util.h"
 
 int
@@ -66,7 +67,7 @@ main(int argc, char *argv[]) {
 	}
 
 	switch(mode) {
-	case HNAME: printf("hostname\n");break;
+	case HNAME: hname();break;
 	case NSLOOK: printf("nslook\n");break;
 	case UDP:
 		if (type == CLIENT) {
@@ -84,8 +85,6 @@ main(int argc, char *argv[]) {
 		break;
 	default: usage(); exit(1);
 	}
-
-	printf("%s:%s\n", dest, port);
 
 	return 0;
 }

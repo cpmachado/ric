@@ -5,8 +5,8 @@ include config.mk
 
 SRC= \
 	src/ric.c\
+	src/hname.c\
 	src/util.c
-#	src/hname.c\
 #	src/nslook.c\
 #	src/udp_client.c\
 #	src/tcp_client.c\
