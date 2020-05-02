@@ -28,22 +28,23 @@ main(int argc, char *argv[]) {
 	while (--argc > 0 && (*++argv)[0] ==  '-') {
 		while ((c = *++argv[0])) {
 			switch (c) {
-			case 'h': usage(); exit(0);
-			case 'v': version(); exit(0);
+			case 'h': usage(); exit(EXIT_SUCCESS);
+			case 'v': version(); exit(EXIT_SUCCESS);
 			case 'n': mode = HNAME; break;
 			case 'w': mode = NSLOOK; break;
 			case 'u': mode = UDP; break;
 			case 't': mode = TCP; break;
 			case 'l': type = SERVER; break;
 			default:
-				usage(); exit(1);
+				usage();
+				exit(EXIT_FAILURE);
 			}
 		}
 	}
 
 	if (argc > 1) {
 		usage();
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	if (argc) {
@@ -55,7 +56,7 @@ main(int argc, char *argv[]) {
 		}
 		if (strtok(NULL, ":")) {
 			usage();
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -68,7 +69,7 @@ main(int argc, char *argv[]) {
 
 	switch(mode) {
 	case HNAME: hname();break;
-	case NSLOOK: printf("nslook\n");break;
+	case NSLOOK: nslook(dest);break;
 	case UDP:
 		if (type == CLIENT) {
 			printf("udp_client\n");
@@ -83,8 +84,10 @@ main(int argc, char *argv[]) {
 			printf("tcp_server\n");
 		}
 		break;
-	default: usage(); exit(1);
+	default:
+		usage();
+		exit(EXIT_FAILURE);
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
