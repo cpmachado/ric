@@ -25,13 +25,15 @@ a bold and sarcastic manner of the one Rick.
 
 ## ric's flags
 
-- n  -> Task n(hostname)                          -> Task 1
-- w  -> Task w(who is it, weak nslookup)          -> Task 2
-- u  -> Task udp\_client                           -> Task 3, 4, 5
-- t  -> Task tcp\_client                           -> Task 6, 7, 8
+Box for statuts of implementation.
+
+- [x] n  -> Task n(hostname)                          -> Task 1
+- [x] w  -> Task w(who is it, weak nslookup)          -> Task 2
+- [x] u  -> Task udp\_client                           -> Task 3, 4, 5
+- [ ] t  -> Task tcp\_client                           -> Task 6, 7, 8
 - l  -> multiplexes u and t to servers
-    + u  -> Task udp\_server                       -> Task 9
-    + t  -> Task tcp\_server                       -> Task 10, 11, 12
+    + [ ] u  -> Task udp\_server                       -> Task 9
+    + [ ] t  -> Task tcp\_server                       -> Task 10, 11, 12
 
 
 ## Usage
@@ -53,6 +55,13 @@ a bold and sarcastic manner of the one Rick.
     Host: tejo.tecnico.ulisboa.pt
     Port: 58001
 ```
+
+
+## ROADMAP
+- Finish implementing the guide.
+- Find proper documentation methodology.
+- Develop such documentation.
+- Extend to other features.
 
 
 ## Recommended stuff

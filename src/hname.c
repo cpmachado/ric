@@ -1,15 +1,5 @@
 /* See LICENSE for details */
 /* hname: gethostname - task 1 */
-/*
- *  Dependency analysis:
- *  - EXIT_FAILURE: stdlib.h
- *  - HOST_NAME_MAX: limits.h
- *  - errno: errno.h
- *  - exit: stdlib.h
- *  - fprintf: stdio.h
- *  - gethostname: unistd.h
- *  - strerror: string.h
- * */
 
 
 /* HEADERS */
@@ -38,4 +28,3 @@ hname(void) {
 		fprintf(stderr, "host name: %s\n", buffer);
 	}
 }
-

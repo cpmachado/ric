@@ -53,7 +53,7 @@ src/tcp_client.o: src/tcp_client.c
 src/tcp_server.o: src/tcp_server.c
 src/udp_client.o: src/udp_client.c
 src/udp_server.o: src/udp_server.c
-src/util.o: src/util.c
+src/util.o: src/util.c config.h
 
 ric: ${OBJ}
 	@echo CC -o $@

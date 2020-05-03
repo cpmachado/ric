@@ -1,6 +1,7 @@
 /* See LICENSE for details */
 /* ric: RCI Internet command */
 
+
 /* HEADERS */
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,7 @@
 #include "config.h"
 #include "ric.h"
 #include "util.h"
+
 
 /* FUNCTION DEFINITIONS */
 int
@@ -26,6 +28,7 @@ main(int argc, char *argv[]) {
 		CLIENT,
 		SERVER
 	} type = CLIENT;
+
 
 	while (--argc > 0 && (*++argv)[0] ==  '-') {
 		while ((c = *++argv[0])) {

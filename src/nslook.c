@@ -1,27 +1,6 @@
 /* See LICENSE for details */
 /* nslook: getaddrinfo - task 2 */
-/*
- *  Dependency analysis:
- *  - AF_INET: sys/socket.h
- *  - AI_CANONNAME: netdb.h
- *  - EXIT_FAILURE: stdlib.h
- *  - INET_ADDRSTRLEN: arpa/inet.h
- *  - SOCK_STREAM: sys/socket.h
- *  - exit: stdlib.h
- *  - freeaddrinfo:
- *    + netdb.h
- *    + sys/socket.h
- *  - gai_strerror: netdb.h
- *  - getaddrinfo:
- *    + netdb.h
- *    + sys/socket.h
- *  - inet_ntop: arpa/inet.h
- *  - memset: string.h
- *  - ntohl: arpa/inet.h
- *  - struct addrinfo: netdb.h
- *  - struct in_addr: arpa/inet.h
- *  - struct sockaddr_in: sys/socket
- * */
+
 
 /* HEADERS */
 #include <arpa/inet.h>

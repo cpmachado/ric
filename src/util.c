@@ -1,10 +1,13 @@
 /* See LICENSE for details */
 /* util: util functions for ric */
 
+/* HEADERS */
 #include <stdio.h>
 
 #include "config.h"
 
+
+/* FUNCTION DEFINITIONS */
 void
 usage(void) {
 	fprintf(stdout,

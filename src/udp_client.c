@@ -1,33 +1,6 @@
 /* See LICENSE for details */
 /* udp_client: udp client - task 3, 4, and 5 */
-/*
- *  Dependency analysis:
- *  - AF_INET: sys/socket.h
- *  - BUFSIZ: stdio.h
- *  - NI_MAXHOST: netdb.h
- *  - NI_MAXSERV: netdb.h
- *  - SOCK_DGRAM: sys/socket.h
- *  - STDOUT_FILENO: unistd.h
- *  - close: unistd.h
- *  - fprintf: stdio.h
- *  - freeaddrinfo:
- *    + netdb.h
- *    + sys/socket.h
- *  - getaddrinfo:
- *    + netdb.h
- *    + sys/socket.h
- *  - getnameinfo:
- *    + netdb.h
- *    + sys/socket.h
- *  - printf: stdio.h
- *  - recvfrom: sys/socket.h
- *  - sendto: sys/socket.h
- *  - socket: sys/socket.h
- *  - socklen_t: sys/socket.h
- *  - struct addrinfo: netdb.h
- *  - struct sockaddr_in: sys/socket
- *  - write: unistd.h
- * */
+
 
 /* HEADERS */
 #include <errno.h>
