@@ -40,8 +40,8 @@ a bold and sarcastic manner of the one Rick.
   ric is a RCI Internet Command.
   Usage: ric [OPTIONS] [HOSTNAME:PORT]
   Options:
-      -h          -- display help and exit
-      -v          -- display version and exit
+     - h          -- display help and exit
+     - v          -- display version and exit
      - n          -- hostname: Task 1
      - w          -- nslookup: Task 2
      - u          -- udp_client: Task 3, 4, 5

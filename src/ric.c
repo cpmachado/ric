@@ -1,6 +1,7 @@
 /* See LICENSE for details */
 /* ric: RCI Internet command */
 
+/* HEADERS */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,7 @@
 #include "ric.h"
 #include "util.h"
 
+/* FUNCTION DEFINITIONS */
 int
 main(int argc, char *argv[]) {
 	int c;
@@ -72,7 +74,7 @@ main(int argc, char *argv[]) {
 	case NSLOOK: nslook(dest);break;
 	case UDP:
 		if (type == CLIENT) {
-			printf("udp_client\n");
+			udp_client(dest, port);
 		} else {
 			printf("udp_server\n");
 		}
