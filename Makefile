@@ -4,12 +4,15 @@ include config.mk
 
 
 SRC= \
+	src/ric.c\
+	src/util.c
+
+LIBRICSRC=\
 	src/hname.c\
 	src/nslook.c\
-	src/ric.c\
-	src/udp_client.c\
-	src/util.c
-#	src/tcp_client.c\
+	src/tcp_client.c\
+	src/udp_client.c
+
 #	src/udp_server.c\
 #	src/tcp_server.c
 
@@ -22,15 +25,16 @@ PKGFILES=\
 	man\
 	src
 
-OBJ= ${SRC:.c=.o}
-BIN= ric
+LIBRICOBJ = ${LIBRICSRC:.c=.o}
+OBJ = ${SRC:.c=.o}
+BIN = ric libric.a
 
 all: ${BIN}
 	@echo "all built"
 
 clean:
 	@echo cleaning
-	@rm -rf ${BIN} ${OBJ} ric-${VERSION} ric-${VERSION}.tar.gz
+	@rm -rf ${BIN} ${OBJ} ${LIBRICOBJ} ric-${VERSION} ric-${VERSION}.tar.gz
 
 options:
 	@echo "CC        = ${CC}"
@@ -38,6 +42,7 @@ options:
 	@echo "CPPFLAGS  = ${CPPFLAGS}"
 	@echo "LDFLAGS   = ${LDFLAGS}"
 	@echo "OBJ       = ${OBJ}"
+	@echo "LIBRICOBJ = ${LIBRICOBJ}"
 	@echo "BIN       = ${BIN}"
 
 .c.o:
@@ -48,16 +53,20 @@ config.h: config.def.h
 	cp config.def.h config.h
 
 src/hname.o: src/hname.c
-src/ric.o: src/ric.c config.h config.mk include/ric.h
+src/ric.o: src/ric.c config.h include/ric.h
 src/tcp_client.o: src/tcp_client.c
 src/tcp_server.o: src/tcp_server.c
 src/udp_client.o: src/udp_client.c
 src/udp_server.o: src/udp_server.c
-src/util.o: src/util.c config.h
+src/util.o: src/util.c config.h config.mk
 
-ric: ${OBJ}
+libric.a: ${LIBRICOBJ}
+	@echo AR -o $@
+	@ar rcs $@ ${LIBRICOBJ}
+
+ric: ${OBJ} libric.a
 	@echo CC -o $@
-	@${CC} -o $@ ${OBJ} ${LDFLAGS}
+	@${CC} -o $@ ${OBJ} libric.a ${LDFLAGS}
 
 dist: clean
 	mkdir -p ric-${VERSION}

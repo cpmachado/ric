@@ -3,6 +3,8 @@
 
 
 /* HEADERS */
+#include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +12,10 @@
 #include "config.h"
 #include "ric.h"
 #include "util.h"
+
+
+/* GLOBAL VARIABLES */
+extern int errno;
 
 
 /* FUNCTION DEFINITIONS */
@@ -28,6 +34,18 @@ main(int argc, char *argv[]) {
 		CLIENT,
 		SERVER
 	} type = CLIENT;
+
+	/* TASK 8 */
+	struct sigaction act;
+
+	memset(&act, 0, sizeof(act));
+	act.sa_handler = SIG_IGN;
+	if (sigaction(SIGPIPE, &act, NULL) < 0) {
+		fprintf(stderr, "error: ric: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+
+
 
 
 	while (--argc > 0 && (*++argv)[0] ==  '-') {
@@ -84,7 +102,7 @@ main(int argc, char *argv[]) {
 		break;
 	case TCP:
 		if (type == CLIENT) {
-			printf("tcp_client\n");
+			tcp_client(dest, port);
 		} else {
 			printf("tcp_server\n");
 		}

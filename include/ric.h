@@ -12,3 +12,6 @@ void nslook(char *dest);
 /* udp_client: udp client sends hello to dest:port, in src/udp_client.c */
 void udp_client(char *dest, char *port);
 
+/* tcp_client: tcp client sends hello to dest:port, in src/tcp_client.c */
+void tcp_client(char *dest, char *port);
+

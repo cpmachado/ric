@@ -15,4 +15,4 @@ CPPFLAGS = -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=200809L \
 CFLAGS = -W -Wall -Werror -Wextra -std=c99 -pedantic ${CPPFLAGS} ${INCS}
 LDFLAGS =
 # for a future curses interface in a later day
-#LDFLAGS = -static -lncurses -ltinfo -ldl
+#LDFLAGS = -lncurses -ltinfo
