@@ -62,9 +62,12 @@ udp_client(char *dest, char *port) {
 		exit(EXIT_FAILURE);
 	}
 
-	write(STDOUT_FILENO, "echo :", 6);
+	write(STDOUT_FILENO, "echo: ", 6);
 	write(STDOUT_FILENO, buffer, n);
 	close(fd);
+
+
+	/* Task 5 */
 	errcode = getnameinfo((struct sockaddr*)&addr, addrlen,
 	                      host, sizeof(host),
                           service, sizeof(service), 0);
