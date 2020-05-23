@@ -1,6 +1,5 @@
 /* See LICENSE for details */
-/* tcp_client: tcp client - task 6, 7, and 8 */
-/* Task 8 is implemented in ric.c, as it is a signal's treatment procedure */
+/* tcp_server: tcp server - task 10, 11, and 12 */
 
 
 /* HEADERS */
@@ -20,7 +19,7 @@ extern int errno;
 
 /* FUNCTION DEFINITIONS */
 void
-tcp_client(char *dest, char *port) {
+tcp_server(char *dest, char *port) {
 	char *msg = "Hello!\n";
 	char *ptr, buffer[BUFSIZ];
 	int fd, n;
@@ -29,7 +28,7 @@ tcp_client(char *dest, char *port) {
 
 
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		fprintf(stderr, "error: tcp_client: %s\n", strerror(errno));
+		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -40,7 +39,7 @@ tcp_client(char *dest, char *port) {
 	hints.ai_socktype = SOCK_STREAM;
 
 	if ((n = getaddrinfo(dest, port, &hints, &res))) {
-		fprintf(stderr, "error: tcp_client: %s\n", gai_strerror(n));
+		fprintf(stderr, "error: tcp_server: %s\n", gai_strerror(n));
 		exit(EXIT_FAILURE);
 	}
 
@@ -48,7 +47,7 @@ tcp_client(char *dest, char *port) {
 	freeaddrinfo(res);
 
 	if (n < 0) {
-		fprintf(stderr, "error: tcp_client: %s\n", strerror(errno));
+		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -60,11 +59,11 @@ tcp_client(char *dest, char *port) {
 	while (nleft) {
 		nwritten = write(fd, ptr, nleft);
 		if (nwritten < 0) {
-			fprintf(stderr, "error: tcp_client: %s\n", strerror(errno));
+			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
 			
 		} else if (!nwritten) {
-			fprintf(stderr, "error: tcp_client: socket closed\n");
+			fprintf(stderr, "error: tcp_server: socket closed\n");
 			exit(EXIT_FAILURE);
 		}
 		nleft -= nwritten;
@@ -76,7 +75,7 @@ tcp_client(char *dest, char *port) {
 	while (nleft > 0) {
 		nread = read(fd, ptr, BUFSIZ);
 		if (nread < 0) {
-			fprintf(stderr, "error: tcp_client: %s\n", strerror(errno));
+			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
 			
 		} else if (!nread) {

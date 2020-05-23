@@ -97,14 +97,14 @@ main(int argc, char *argv[]) {
 		if (type == CLIENT) {
 			udp_client(dest, port);
 		} else {
-			printf("udp_server\n");
+			udp_server(dest, port);
 		}
 		break;
 	case TCP:
 		if (type == CLIENT) {
 			tcp_client(dest, port);
 		} else {
-			printf("tcp_server\n");
+			tcp_server(dest, port);
 		}
 		break;
 	default:

@@ -11,10 +11,10 @@ LIBRICSRC=\
 	src/hname.c\
 	src/nslook.c\
 	src/tcp_client.c\
-	src/udp_client.c
+	src/tcp_server.c\
+	src/udp_client.c\
+	src/udp_server.c
 
-#	src/udp_server.c\
-#	src/tcp_server.c
 
 PKGFILES=\
 	LICENSE\
@@ -45,6 +45,26 @@ options:
 	@echo "LIBRICOBJ = ${LIBRICOBJ}"
 	@echo "BIN       = ${BIN}"
 
+dist: clean
+	mkdir -p ric-${VERSION}
+	cp -r ${PKGFILES} ric-${VERSION}
+	tar -cz  -f ric-${VERSION}.tar.gz ric-${VERSION}
+	rm -r ric-${VERSION}
+
+install: ric libric.a
+	@echo installing executable file to ${PREFIX}/bin
+	@mkdir -p ${PREFIX}/bin
+	@cp -f ric ${PREFIX}/bin
+	@chmod 755 ${PREFIX}/bin/ric
+	@echo installing manual page to ${MANPREFIX}/man1
+	@mkdir -p ${MANPREFIX}/man1
+	@cp man/ric.1 ${MANPREFIX}/man1/ric.1
+	@chmod 644 ${MANPREFIX}/man1/ric.1
+
+uninstall:
+	@echo removing executable file from ${PREFIX}/bin
+	@rm -f ${PREFIX}/bin/ric ${MANPREFIX}/man1/ric.1
+
 .c.o:
 	@echo CC $<
 	@${CC} ${CFLAGS} -c -o $@ $<
@@ -67,25 +87,5 @@ libric.a: ${LIBRICOBJ}
 ric: ${OBJ} libric.a
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} libric.a ${LDFLAGS}
-
-dist: clean
-	mkdir -p ric-${VERSION}
-	cp -r ${PKGFILES} ric-${VERSION}
-	tar -cz  -f ric-${VERSION}.tar.gz ric-${VERSION}
-	rm -r ric-${VERSION}
-
-install: ric
-	@echo installing executable file to ${PREFIX}/bin
-	@mkdir -p ${PREFIX}/bin
-	@cp -f ric ${PREFIX}/bin
-	@chmod 755 ${PREFIX}/bin/ric
-	@echo installing manual page to ${MANPREFIX}/man1
-	@mkdir -p ${MANPREFIX}/man1
-	@cp man/ric.1 ${MANPREFIX}/man1/ric.1
-	@chmod 644 ${MANPREFIX}/man1/ric.1
-
-uninstall:
-	@echo removing executable file from ${PREFIX}/bin
-	@rm -f ${PREFIX}/bin/ric ${MANPREFIX}/man1/ric.1
 
 .PHONY: all clean dist install uninstall
