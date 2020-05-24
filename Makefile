@@ -51,7 +51,7 @@ dist: clean
 	tar -cz  -f ric-${VERSION}.tar.gz ric-${VERSION}
 	rm -r ric-${VERSION}
 
-install: ric libric.a
+install: ric
 	@echo installing executable file to ${PREFIX}/bin
 	@mkdir -p ${PREFIX}/bin
 	@cp -f ric ${PREFIX}/bin

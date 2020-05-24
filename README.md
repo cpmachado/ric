@@ -30,30 +30,30 @@ Box for statuts of implementation.
 - [x] n  -> Task n(hostname)                          -> Task 1
 - [x] w  -> Task w(who is it, weak nslookup)          -> Task 2
 - [x] u  -> Task udp\_client                           -> Task 3, 4, 5
-- [ ] t  -> Task tcp\_client                           -> Task 6, 7, 8
+- [x] t  -> Task tcp\_client                           -> Task 6, 7, 8
 - l  -> multiplexes u and t to servers
-    + [ ] u  -> Task udp\_server                       -> Task 9
-    + [ ] t  -> Task tcp\_server                       -> Task 10, 11, 12
+    + [x] u  -> Task udp\_server                       -> Task 9
+    + [x] t  -> Task tcp\_server                       -> Task 10, 11, 12
 
 
 ## Usage
 
 ```shell
-  ric is a RCI Internet Command.
-  Usage: ric [OPTIONS] [HOSTNAME:PORT]
-  Options:
-     - h          -- display help and exit
-     - v          -- display version and exit
-     - n          -- hostname: Task 1
-     - w          -- nslookup: Task 2
-     - u          -- udp_client: Task 3, 4, 5
-     - t          -- tcp_client: Task 6, 7, 8
-     - l          -- multiplexes u and t to servers
-       + u        -- udp_server: Task 9
-       + t        -- tcp_server: Task 10, 11, 12
-  Default values:
-    Host: tejo.tecnico.ulisboa.pt
-    Port: 58001
+    ric is a RCI Internet Command.
+    Usage: ric [OPTIONS] [[HOSTNAME]:[PORT]]
+    Options:
+       - h          -- display help and exit
+       - v          -- display version and exit
+       - n          -- hostname: Task 1
+       - w          -- nslookup: Task 2
+       - u          -- udp_client: Task 3, 4, 5
+       - t          -- tcp_client: Task 6, 7, 8
+       - l          -- multiplexes u and t to servers
+         + u        -- udp_server: Task 9
+         + t        -- tcp_server: Task 10, 11, 12
+    Default values:
+      Host: localhost
+      Port: 1337
 ```
 
 
