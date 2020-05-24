@@ -15,12 +15,20 @@ a bold and sarcastic manner of the one Rick.
 
 ## Correspondence
 
-- hname.c        -- task 1: gethostname
-- nslook.c       -- task 2: getaddrinfo
-- udp\_client.c   -- task 3, 4, 5: udp\_client
-- tcp\_client.c   -- task 6, 7, 8: tcp\_client
-- udp\_server.c   -- task 9: udp\_server
-- tcp\_server.c   -- task 10, 11, 12: tcp\_server
+We built libric, based on the exercises.
+The header can be found in the include folder, as ***ric.h***.
+
+The source file correspondence is as follows:
+
+- src/ric/hname.c        -- task 1: gethostname
+- src/ric/nslook.c       -- task 2: getaddrinfo
+- src/ric/udp\_client.c   -- task 3, 4, 5: udp\_client
+- src/ric/tcp\_client.c   -- task 6, 7, 8: tcp\_client
+- src/ric/udp\_server.c   -- task 9: udp\_server
+- src/ric/tcp\_server.c   -- task 10, 11, 12: tcp\_server
+
+It was properly adapted.
+The signal catching, is found in the base ***src/ric.c***.
 
 
 ## ric's flags

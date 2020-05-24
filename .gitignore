@@ -6,6 +6,7 @@
 
 libric.a
 ric
+!ric/
 
 # user config.h
 config.h

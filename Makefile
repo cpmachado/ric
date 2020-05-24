@@ -8,12 +8,12 @@ SRC= \
 	src/util.c
 
 LIBRICSRC=\
-	src/hname.c\
-	src/nslook.c\
-	src/tcp_client.c\
-	src/tcp_server.c\
-	src/udp_client.c\
-	src/udp_server.c
+	src/ric/hname.c\
+	src/ric/nslook.c\
+	src/ric/tcp_client.c\
+	src/ric/tcp_server.c\
+	src/ric/udp_client.c\
+	src/ric/udp_server.c
 
 
 PKGFILES=\
@@ -66,19 +66,23 @@ uninstall:
 	@rm -f ${PREFIX}/bin/ric ${MANPREFIX}/man1/ric.1
 
 .c.o:
-	@echo CC $<
+	@echo CC -c $<
 	@${CC} ${CFLAGS} -c -o $@ $<
 
 config.h: config.def.h
 	cp config.def.h config.h
 
-src/hname.o: src/hname.c
+# ric program object files
 src/ric.o: src/ric.c config.h include/ric.h
-src/tcp_client.o: src/tcp_client.c
-src/tcp_server.o: src/tcp_server.c
-src/udp_client.o: src/udp_client.c
-src/udp_server.o: src/udp_server.c
 src/util.o: src/util.c config.h config.mk
+
+# libric object files 
+src/ric/hname.o: src/ric/hname.c
+src/ric/nslook.o: src/ric/nslook.c
+src/ric/tcp_client.o: src/ric/tcp_client.c
+src/ric/tcp_server.o: src/ric/tcp_server.c
+src/ric/udp_client.o: src/ric/udp_client.c
+src/ric/udp_server.o: src/ric/udp_server.c
 
 libric.a: ${LIBRICOBJ}
 	@echo AR -o $@
