@@ -15,6 +15,10 @@
 #include <unistd.h>
 
 
+/* MACROS */
+#define max(A, B) ((A) >= (B)? (A) : (B))
+
+
 /* GLOBAL VARIABLES */
 extern int errno;
 
@@ -22,8 +26,13 @@ extern int errno;
 /* FUNCTION DEFINITIONS */
 void
 tcp_server(char *dest, char *port) {
+	char *busy_msg = "busy\n";
 	char *ptr, buffer[BUFSIZ];
+	enum {idle, busy} state;
+	fd_set rfds;
+	int afd;
 	int fd, newfd, errcode;
+	int maxfd, counter;
 	socklen_t addrlen;
 	ssize_t n, nw;
 	struct addrinfo hints, *res;
@@ -58,30 +67,60 @@ tcp_server(char *dest, char *port) {
 		exit(EXIT_FAILURE);
 	}
 
+	state = idle;
 	while (1) {
-		addrlen = sizeof(addr);
-		if ((newfd = accept(fd, (struct sockaddr*)&addr, &addrlen)) < 0) {
+		FD_ZERO(&rfds);
+		FD_SET(fd, &rfds);
+		maxfd = fd;
+		if (state) {
+			FD_SET(afd, &rfds);
+			maxfd = max(maxfd, afd);
+		}
+		counter = select(maxfd + 1, &rfds, NULL, NULL, NULL);
+
+		if (counter < 0) {
 			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
 		}
-		write(STDOUT_FILENO, "echo: ", 6);
-		while ((n = read(newfd, buffer, BUFSIZ))) {
-			if (n < 0) {
+
+		if (FD_ISSET(fd, &rfds)) {
+			addrlen = sizeof(addr);
+			if ((newfd = accept(fd, (struct sockaddr*)&addr, &addrlen)) < 0) {
 				fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
 			}
-			ptr = buffer;
-			while (n) {
-				if ((nw = write(newfd, ptr, n)) < 0) {
-					fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
+			switch(state) {
+			case idle: afd = newfd; state = busy; break;
+			case busy:
+				write(newfd, busy_msg, strlen(busy_msg));
+				close(newfd);
+				break;
+			}
+			write(STDOUT_FILENO, "echo: ", 6);
+		}
+		if (FD_ISSET(afd, &rfds)) {
+			if ((n = read(afd, buffer, BUFSIZ))) {
+				if (n < 0) {
+					fprintf(stderr, "error: tcp_server: %s\n",
+					        strerror(errno));
 					exit(EXIT_FAILURE);
 				}
-				write(STDOUT_FILENO, ptr, nw);
-				n -= nw;
-				ptr += nw;
+				ptr = buffer;
+				while (n) {
+					if ((nw = write(afd, ptr, n)) < 0) {
+						fprintf(stderr, "error: tcp_server: %s\n",
+						        strerror(errno));
+						exit(EXIT_FAILURE);
+					}
+					write(STDOUT_FILENO, ptr, nw);
+					n -= nw;
+					ptr += nw;
+				}
+			} else {
+				close(afd);
+				state = idle;
 			}
 		}
-		close(newfd);
 	}
 }
 
