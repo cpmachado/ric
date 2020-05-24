@@ -58,10 +58,10 @@ Box for statuts of implementation.
 
 
 ## ROADMAP
-- Finish implementing the guide.
-- Find proper documentation methodology.
-- Develop such documentation.
-- Extend to other features.
+- [x] Finish implementing the guide.
+- [ ] Find proper documentation methodology.
+- [ ] Develop such documentation.
+- [ ] Extend to other features.
 
 
 ## Recommended stuff
