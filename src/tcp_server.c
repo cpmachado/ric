@@ -8,15 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-
-/* MACROS */
-#define max(A, B) ((A) >= (B)? (A) : (B))
 
 
 /* GLOBAL VARIABLES */
@@ -26,17 +21,13 @@ extern int errno;
 /* FUNCTION DEFINITIONS */
 void
 tcp_server(char *dest, char *port) {
-	char *busy_msg = "busy\n";
 	char *ptr, buffer[BUFSIZ];
-	enum {idle, busy} state;
-	fd_set rfds;
-	int afd;
-	int fd, newfd, errcode;
-	int maxfd, counter;
+	int fd, newfd, errcode, ret;
 	socklen_t addrlen;
 	ssize_t n, nw;
 	struct addrinfo hints, *res;
 	struct sockaddr_in addr;
+	pid_t pid;
 
 
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -67,47 +58,26 @@ tcp_server(char *dest, char *port) {
 		exit(EXIT_FAILURE);
 	}
 
-	state = idle;
 	while (1) {
-		FD_ZERO(&rfds);
-		FD_SET(fd, &rfds);
-		maxfd = fd;
-		if (state) {
-			FD_SET(afd, &rfds);
-			maxfd = max(maxfd, afd);
-		}
-		counter = select(maxfd + 1, &rfds, NULL, NULL, NULL);
+		addrlen = sizeof(addr);
+		do {
+			newfd = accept(fd, (struct sockaddr*)&addr, &addrlen);
+		} while (newfd < 0 && errno == EINTR);
 
-		if (counter < 0) {
+		if ((pid = fork()) < 0) {
 			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
-		}
-
-		if (FD_ISSET(fd, &rfds)) {
-			addrlen = sizeof(addr);
-			if ((newfd = accept(fd, (struct sockaddr*)&addr, &addrlen)) < 0) {
-				fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
-				exit(EXIT_FAILURE);
-			}
-			switch(state) {
-			case idle: afd = newfd; state = busy; break;
-			case busy:
-				write(newfd, busy_msg, strlen(busy_msg));
-				close(newfd);
-				break;
-			}
+		} else if (!pid) {
+			/* CHILD PROCESS */
+			close(fd);
 			write(STDOUT_FILENO, "echo: ", 6);
-		}
-		if (FD_ISSET(afd, &rfds)) {
-			if ((n = read(afd, buffer, BUFSIZ))) {
+			while ((n = read(newfd, buffer, BUFSIZ))) {
 				if (n < 0) {
-					fprintf(stderr, "error: tcp_server: %s\n",
-					        strerror(errno));
 					exit(EXIT_FAILURE);
 				}
 				ptr = buffer;
 				while (n) {
-					if ((nw = write(afd, ptr, n)) < 0) {
+					if ((nw = write(newfd, ptr, n)) < 0) {
 						fprintf(stderr, "error: tcp_server: %s\n",
 						        strerror(errno));
 						exit(EXIT_FAILURE);
@@ -116,10 +86,17 @@ tcp_server(char *dest, char *port) {
 					n -= nw;
 					ptr += nw;
 				}
-			} else {
-				close(afd);
-				state = idle;
 			}
+			close(newfd);
+			exit(EXIT_SUCCESS);
+		}
+		do {
+			ret = close(newfd);
+		} while (ret < 0 && errno == EINTR);
+		if (ret < 0) {
+			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
+			exit(EXIT_FAILURE);
+		
 		}
 	}
 }

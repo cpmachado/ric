@@ -35,7 +35,7 @@ main(int argc, char *argv[]) {
 		SERVER
 	} type = CLIENT;
 
-	/* TASK 8 */
+	/* TASK 8 and 12 */
 	struct sigaction act;
 
 	memset(&act, 0, sizeof(act));
@@ -44,8 +44,10 @@ main(int argc, char *argv[]) {
 		fprintf(stderr, "error: ric: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-
-
+	if (sigaction(SIGCHLD, &act, NULL) < 0) {
+		fprintf(stderr, "error: ric: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 
 
 	while (--argc > 0 && (*++argv)[0] ==  '-') {
