@@ -8,7 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/select.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -20,11 +22,12 @@ extern int errno;
 /* FUNCTION DEFINITIONS */
 void
 tcp_server(char *dest, char *port) {
-	char *msg = "Hello!\n";
 	char *ptr, buffer[BUFSIZ];
-	int fd, n;
-	ssize_t nbytes, nleft, nwritten, nread;
+	int fd, newfd, errcode;
+	socklen_t addrlen;
+	ssize_t n, nw;
 	struct addrinfo hints, *res;
+	struct sockaddr_in addr;
 
 
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -37,58 +40,48 @@ tcp_server(char *dest, char *port) {
 	hints.ai_family = AF_INET;
 	/* TCP */
 	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags =  AI_PASSIVE;
 
-	if ((n = getaddrinfo(dest, port, &hints, &res))) {
-		fprintf(stderr, "error: tcp_server: %s\n", gai_strerror(n));
+	if ((errcode = getaddrinfo(dest, port, &hints, &res))) {
+		fprintf(stderr, "error: tcp_server: %s\n", gai_strerror(errcode));
 		exit(EXIT_FAILURE);
 	}
 
-	n = connect(fd, res->ai_addr, res->ai_addrlen);
+	if (bind(fd, res->ai_addr, res->ai_addrlen) < 0) {
+		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 	freeaddrinfo(res);
 
-	if (n < 0) {
+	if (listen(fd, 5) < 0) {
 		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
-	/* Task 7 */
-	ptr = strcpy(buffer, msg);
-	nbytes = strlen(msg); /* using dynamic message, hence need for length*/
-
-	nleft = nbytes;
-	while (nleft) {
-		nwritten = write(fd, ptr, nleft);
-		if (nwritten < 0) {
+	while (1) {
+		addrlen = sizeof(addr);
+		if ((newfd = accept(fd, (struct sockaddr*)&addr, &addrlen)) < 0) {
 			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
 			exit(EXIT_FAILURE);
-			
-		} else if (!nwritten) {
-			fprintf(stderr, "error: tcp_server: socket closed\n");
-			exit(EXIT_FAILURE);
 		}
-		nleft -= nwritten;
-		ptr += nwritten;
-	}
-	
-	nleft = nbytes;
-	ptr = buffer;
-	while (nleft > 0) {
-		nread = read(fd, ptr, BUFSIZ);
-		if (nread < 0) {
-			fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
-			exit(EXIT_FAILURE);
-			
-		} else if (!nread) {
-			close(fd);
-			break;
+		write(STDOUT_FILENO, "echo: ", 6);
+		while ((n = read(newfd, buffer, BUFSIZ))) {
+			if (n < 0) {
+				fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
+				exit(EXIT_FAILURE);
+			}
+			ptr = buffer;
+			while (n) {
+				if ((nw = write(newfd, ptr, n)) < 0) {
+					fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
+					exit(EXIT_FAILURE);
+				}
+				write(STDOUT_FILENO, ptr, nw);
+				n -= nw;
+				ptr += nw;
+			}
 		}
-		nleft -= nread;
-		ptr += nread;
+		close(newfd);
 	}
-	nread = nbytes - nleft;
-	close(fd);
-
-	write(STDOUT_FILENO, "echo: ", 6);
-	write(STDOUT_FILENO, buffer, nread);
 }
 
