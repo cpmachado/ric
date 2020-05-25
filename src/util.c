@@ -11,7 +11,7 @@
 void
 usage(void) {
 	fprintf(stdout,
-	        "ric is a RCI Internet Command.\n"
+	        "ric is the RCI Internet Command.\n"
 	        "Usage: ric [OPTIONS] [[HOSTNAME]:[PORT]]\n"
 	        "Options:\n"
 	        "   - h          -- display help and exit\n"
