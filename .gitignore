@@ -4,6 +4,7 @@
 *.o
 *.exe
 
+lib/
 libric.a
 ric
 !ric/
