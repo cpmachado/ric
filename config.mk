@@ -3,7 +3,7 @@
 VERSION = 1.0.0
 
 # installation
-PREFIX ?= /usr/local/
+PREFIX ?= /usr/local
 MANPREFIX = ${PREFIX}/share/man
 
 
