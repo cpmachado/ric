@@ -1,13 +1,27 @@
-# Tarballs and binaries
+# Tarballs
 *.zip
 *.tar.gz
-*.o
-*.exe
 
+# binaries
+*.exe
+*.o
 lib/
 libric.a
 ric
+
+# exception
 !ric/
+
+# tags
+tags
+
+# gprof
+gmon.out
+
+# gcov
+*.gcov
+*.gcda
+*.gcno
 
 # user config.h
 config.h
