@@ -1,6 +1,6 @@
 # configuration of system
 
-VERSION = 1.0.0
+VERSION = 1.0
 
 # installation
 PREFIX ?= /usr/local
