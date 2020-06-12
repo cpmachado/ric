@@ -32,19 +32,18 @@ SRC = \
 
 
 # object files for libric
-LIBRICOBJ = ${LIBRICSRC:.c=.o}
+LIBRICOBJ = ${LIBRICSRC:src/ric/%.c=lib/ric/%.o}
 LIBRIC = lib/libric.a
 
 
 # object files for ric
-OBJ = ${SRC:.c=.o}
+OBJ = ${SRC:src/%.c=lib/%.o}
 BIN = ric
 
 
 # object and output files
 OUTFILES =\
-	${BIN} ${OBJ}\
-	${LIBRIC} ${LIBRICOBJ}\
+	${BIN} lib\
 	ric-${VERSION} ric-${VERSION}.tar.gz
 
 
@@ -91,40 +90,56 @@ uninstall:
 	@rm -f ${PREFIX}/bin/ric ${MANPREFIX}/man1/ric.1
 
 
-# rules for compilation
-.c.o:
-	@echo CC -c $<
-	@${CC} ${CFLAGS} -c -o $@ $<
-
-
 # configuration for ric
 config.h: config.def.h
 	cp config.def.h config.h
 
 
-# libric object files 
-src/ric/hname.o: src/ric/hname.c
-src/ric/nslook.o: src/ric/nslook.c
-src/ric/tcp_client.o: src/ric/tcp_client.c
-src/ric/tcp_server.o: src/ric/tcp_server.c
-src/ric/udp_client.o: src/ric/udp_client.c
-src/ric/udp_server.o: src/ric/udp_server.c
+# build out directories
+lib:
+	@echo Creating lib
+	@mkdir lib
 
+lib/ric:
+	@echo Creating lib/ric
+	@mkdir -p lib/ric
+
+
+# rules for compilation
+
+lib/%.o: src/%.c config.h | lib
+	@echo CC -c $<
+	@${CC} ${CFLAGS} -c -o $@ $<
+
+lib/ric/%.o: src/ric/%.c | lib/ric
+	@echo CC -c $<
+	@${CC} ${CFLAGS} -c -o $@ $<
+
+
+
+# libric object files 
+lib/ric/hname.o: src/ric/hname.c
+lib/ric/nslook.o: src/ric/nslook.c
+lib/ric/tcp_client.o: src/ric/tcp_client.c
+lib/ric/tcp_server.o: src/ric/tcp_server.c
+lib/ric/udp_client.o: src/ric/udp_client.c
+lib/ric/udp_server.o: src/ric/udp_server.c
 
 # ric program object files
-src/ric.o: src/ric.c config.h include/ric.h
-src/util.o: src/util.c config.h config.mk
+lib/ric.o: src/ric.c include/ric.h include/util.h
+lib/util.o: src/util.c config.mk
 
 
 # generate libric
-lib/libric.a: ${LIBRICOBJ}
+lib/libric.a: ${LIBRICOBJ} | lib
+	@echo Making static libric
 	@echo AR -o $@
-	@mkdir -p lib
 	@ar rcs $@ ${LIBRICOBJ}
 
 
 # generate ric
 ric: ${OBJ} ${LIBRIC}
+	@echo Making ric
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LIBRIC} ${LDFLAGS}
 
