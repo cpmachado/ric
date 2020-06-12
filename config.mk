@@ -15,7 +15,7 @@ CPPFLAGS =\
 	-D_BSD_SOURCE\
 	-D_DEFAULT_SOURCE\
 	-D_POSIX_C_SOURCE=200809L
-CFLAGS = -fPIC -W -Wall -Werror -Wextra -std=c99 -pedantic ${CPPFLAGS} ${INCS}
+CFLAGS = -W -Wall -Werror -Wextra -std=c99 -pedantic ${CPPFLAGS} ${INCS}
 LDFLAGS =
 # for a future curses interface in a later day
 #LDFLAGS = -lncurses -ltinfo

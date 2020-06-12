@@ -132,19 +132,19 @@ lib/debug/ric:
 
 lib/%.o: src/%.c config.h | lib
 	@echo CC -c $<
-	@${CC} ${CFLAGS} -c -o $@ $<
+	@${CC} ${CFLAGS} -O3 -c -o $@ $<
 
 lib/ric/%.o: src/ric/%.c | lib/ric
 	@echo CC -c $<
-	@${CC} ${CFLAGS} -c -o $@ $<
+	@${CC} ${CFLAGS} -fPIC -O3 -c -o $@ $<
 
 lib/debug/%.o: test/%.c | lib/debug
 	@echo CC -c $<
-	@${CC} ${CFLAGS} -c -o $@ $<
+	@${CC} ${CFLAGS} -g -O0 -c -o $@ $<
 
 lib/debug/ric/%.o: src/ric/%.c | lib/debug/ric
 	@echo CC -c $<
-	@${CC} ${CFLAGS} -g -pg -c -o $@ $<
+	@${CC} ${CFLAGS} -fPIC -g -O0 -pg -c -o $@ $<
 
 
 # libric object files 
