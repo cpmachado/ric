@@ -20,3 +20,10 @@ void udp_server(char *dest, char *port);
 
 /* tcp_server: tcp echo server binds in dest:port, in src/tcp_server.c */
 void tcp_server(char *dest, char *port);
+
+
+/*
+ * NEW FUNCTIONS WITH IO segregated
+ */
+/* mhname: same as hname, implemented in src/hname.c */
+char *mhname(void);

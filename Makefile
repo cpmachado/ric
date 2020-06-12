@@ -31,19 +31,35 @@ SRC = \
 	src/util.c
 
 
+# source files for tests
+TEST_SRC= \
+	test/hname_test.c
+
 # object files for libric
 LIBRICOBJ = ${LIBRICSRC:src/ric/%.c=lib/ric/%.o}
 LIBRIC = lib/libric.a
-
 
 # object files for ric
 OBJ = ${SRC:src/%.c=lib/%.o}
 BIN = ric
 
+# object files for libric for testing
+# - has debug symbols
+# - has performance information
+LIBRICOBJ_DEBUG = ${LIBRICSRC:src/ric/%.c=lib/debug/ric/%.o}
+LIBRIC_DEBUG = lib/debug/libric.a
+
+
+# object files for test
+TEST_OBJ = ${TEST_SRC:test/%.c=lib/debug/%.o}
+TEST_BIN = hname_test
+
+
 
 # object and output files
 OUTFILES =\
 	${BIN} lib\
+	${TEST_BIN}\
 	ric-${VERSION} ric-${VERSION}.tar.gz
 
 
@@ -104,6 +120,13 @@ lib/ric:
 	@echo Creating lib/ric
 	@mkdir -p lib/ric
 
+lib/debug:
+	@echo Creating lib/debug
+	@mkdir -p lib/debug
+
+lib/debug/ric:
+	@echo Creating lib/debug/ric
+	@mkdir -p lib/debug/ric
 
 # rules for compilation
 
@@ -115,6 +138,13 @@ lib/ric/%.o: src/ric/%.c | lib/ric
 	@echo CC -c $<
 	@${CC} ${CFLAGS} -c -o $@ $<
 
+lib/debug/%.o: test/%.c | lib/debug
+	@echo CC -c $<
+	@${CC} ${CFLAGS} -c -o $@ $<
+
+lib/debug/ric/%.o: src/ric/%.c | lib/debug/ric
+	@echo CC -c $<
+	@${CC} ${CFLAGS} -g -pg -c -o $@ $<
 
 
 # libric object files 
@@ -142,6 +172,33 @@ ric: ${OBJ} ${LIBRIC}
 	@echo Making ric
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LIBRIC} ${LDFLAGS}
+
+
+# libric object files for debug
+lib/debug/ric/hname.o: src/ric/hname.c
+lib/debug/ric/nslook.o: src/ric/nslook.c
+lib/debug/ric/tcp_client.o: src/ric/tcp_client.c
+lib/debug/ric/tcp_server.o: src/ric/tcp_server.c
+lib/debug/ric/udp_client.o: src/ric/udp_client.c
+lib/debug/ric/udp_server.o: src/ric/udp_server.c
+
+
+# generate libric with debug
+lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
+	@echo Making static libric with debug information
+	@echo AR -o $@
+	@ar rcs $@ ${LIBRICOBJ_DEBUG}
+
+
+# test object files
+lib/debug/hname_test.o: test/hname_test.c include/ric.h
+
+
+# generate tests
+hname_test: ${TEST_OBJ} ${LIBRIC_DEBUG}
+	@echo Making $@
+	@echo CC -o $@
+	@${CC} -o $@ ${TEST_OBJ} ${LIBRIC_DEBUG} ${LDFLAGS} -pg
 
 
 .PHONY: all clean dist install uninstall

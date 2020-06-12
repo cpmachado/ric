@@ -6,3 +6,7 @@ The proposed extensions are:
 - Dynamic messages for TCP and UDP clients.
 - Creation of simple utilities in libric to facilitate implementation of
   libric(such as a function to send a TCP message, and so).
+
+Solutions:
+- Segregation achieved over copies of the previous via global static variables,
+  via new functions.

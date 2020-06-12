@@ -6,8 +6,8 @@
 *.exe
 *.o
 lib/
-libric.a
 ric
+*_test
 
 # exception
 !ric/

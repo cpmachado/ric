@@ -28,3 +28,19 @@ hname(void) {
 		fprintf(stderr, "host name: %s\n", buffer);
 	}
 }
+
+char*
+mhname(void) {
+	char *buffer;
+
+	if (!(buffer = malloc(sizeof(char)*HOST_NAME_MAX))) {
+		fprintf(stderr, "error: hname: %s\n", strerror(errno));
+		return NULL;
+	}
+	if (gethostname(buffer, HOST_NAME_MAX)) {
+		fprintf(stderr, "error: hname: %s\n", strerror(errno));
+		free(buffer);
+		return  NULL;
+	}
+	return buffer;
+}
