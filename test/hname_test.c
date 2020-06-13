@@ -18,8 +18,6 @@ main(void) {
 	printf("Testing hname:\n");
 	printf("  - calling mhname\n");
 	assert((ptr = mhname()));
-	printf("  - testing against $HOSTNAME\n");
-	assert(!strcmp("fortress", ptr));
 
 	free(ptr);
 	return 0;

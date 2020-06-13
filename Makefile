@@ -54,12 +54,17 @@ LIBRIC_DEBUG = lib/debug/libric.a
 TEST_OBJ = ${TEST_SRC:test/%.c=lib/debug/%.o}
 TEST_BIN = hname_test
 
+# object files for ric_debug
+OBJ_DEBUG = ${SRC:src/%.c=lib/debug/%.o}
+BIN_DEBUG = ricdbg
+
 
 
 # object and output files
 OUTFILES =\
 	${BIN} lib\
-	${TEST_BIN}\
+	${TEST_BIN} gmon.out\
+	${BIN_DEBUG}\
 	ric-${VERSION} ric-${VERSION}.tar.gz
 
 
@@ -146,6 +151,10 @@ lib/debug/ric/%.o: src/ric/%.c | lib/debug/ric
 	@echo CC -c $<
 	@${CC} ${CFLAGS} -fPIC -g -O0 -pg -c -o $@ $<
 
+lib/debug/%.o: src/%.c | lib/debug
+	@echo CC -c $<
+	@${CC} ${CFLAGS} -g -O0 -c -o $@ $<
+
 
 # libric object files 
 lib/ric/hname.o: src/ric/hname.c
@@ -183,11 +192,22 @@ lib/debug/ric/udp_client.o: src/ric/udp_client.c
 lib/debug/ric/udp_server.o: src/ric/udp_server.c
 
 
+# ric program object files for debug
+lib/debug/ric.o: src/ric.c include/ric.h include/util.h
+lib/debug/util.o: src/util.c config.mk
+
+
 # generate libric with debug
 lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
 	@echo Making static libric with debug information
 	@echo AR -o $@
 	@ar rcs $@ ${LIBRICOBJ_DEBUG}
+
+
+ricdbg: ${OBJ_DEBUG} ${LIBRIC_DEBUG}
+	@echo Making ric
+	@echo CC -o $@
+	@${CC} -o $@ ${OBJ_DEBUG} ${LIBRIC_DEBUG} ${LDFLAGS}
 
 
 # test object files
