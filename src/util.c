@@ -23,6 +23,7 @@ usage(void) {
 	        "   - l          -- multiplexes u and t to servers\n"
 	        "     + u        -- udp_server: Task 9\n"
 	        "     + t        -- tcp_server: Task 10, 11, 12\n"
+	        "   - c          -- ncurses mode\n"
 	        "Default values:\n"
 	        "  Host: " DEFAULT_DEST "\n"
 	        "  Port: " DEFAULT_PORT "\n");

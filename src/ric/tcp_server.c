@@ -17,46 +17,23 @@
 /* GLOBAL VARIABLES */
 extern int errno;
 
+/* FUNCTION DECLARATIONS */
+int openSocket(int type, char *func);
+void tcpListen(int fd, char *dest, char *port, char *func);
 
 /* FUNCTION DEFINITIONS */
 void
 tcp_server(char *dest, char *port) {
 	char *ptr, buffer[BUFSIZ];
-	int fd, newfd, errcode, ret;
+	int fd, newfd, ret;
 	socklen_t addrlen;
 	ssize_t n, nw;
-	struct addrinfo hints, *res;
 	struct sockaddr_in addr;
 	pid_t pid;
 
+	fd = openSocket(SOCK_STREAM, "tcp_server");
+	tcpListen(fd, dest, port, "tcp_server");
 
-	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-
-	memset(&hints, 0, sizeof(hints));
-	/* Checking IPv4 only */
-	hints.ai_family = AF_INET;
-	/* TCP */
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags =  AI_PASSIVE;
-
-	if ((errcode = getaddrinfo(dest, port, &hints, &res))) {
-		fprintf(stderr, "error: tcp_server: %s\n", gai_strerror(errcode));
-		exit(EXIT_FAILURE);
-	}
-
-	if (bind(fd, res->ai_addr, res->ai_addrlen) < 0) {
-		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
-	freeaddrinfo(res);
-
-	if (listen(fd, 5) < 0) {
-		fprintf(stderr, "error: tcp_server: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
-	}
 
 	while (1) {
 		addrlen = sizeof(addr);

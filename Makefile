@@ -1,6 +1,10 @@
 # See LICENSE for details
 # makefile for ric
 
+.POSIX:
+.PHONY: all clean dist install uninstall
+.DEFAULT: all
+
 include config.mk
 
 
@@ -22,16 +26,13 @@ LIBRICSRC = \
 	src/ric/tcp_client.c\
 	src/ric/tcp_server.c\
 	src/ric/udp_client.c\
-	src/ric/udp_server.c
+	src/ric/udp_server.c\
+	src/ric/util.c
 
 # source files for ric
 SRC = \
 	src/ric.c\
 	src/util.c
-
-# source files for tests
-TEST_SRC= \
-	test/hname_test.c
 
 
 # object files for libric
@@ -47,16 +48,10 @@ OBJ_DEBUG = ${SRC:src/%.c=lib/debug/%.o}
 OBJ = ${SRC:src/%.c=lib/%.o}
 BIN = ric
 
-# object files for test
-TEST_OBJ = ${TEST_SRC:test/%.c=lib/debug/%.o}
-TEST_BIN = hname_test
-
 
 # object and output files
 OUTFILES =\
-	${BIN} lib\
-	${TEST_BIN} gmon.out\
-	${BIN_DEBUG}\
+	${BIN} lib gmon.out\
 	ric-${VERSION} ric-${VERSION}.tar.gz
 
 
@@ -136,16 +131,13 @@ lib/ric/%.o: src/ric/%.c | lib/ric
 	@${CC} ${CFLAGS} -fPIC -O3 -c -o $@ $<
 
 lib/debug/%.o: src/%.c | lib/debug
-	@echo CC -c $<
+	@echo CC -g -c $<
 	@${CC} ${CFLAGS} -g -pg -O0 -c -o $@ $<
 
 lib/debug/ric/%.o: src/ric/%.c | lib/debug/ric
-	@echo CC -c $<
+	@echo CC -g -c $<
 	@${CC} ${CFLAGS} -fPIC -g -O0 -pg -c -o $@ $<
 
-lib/debug/%.o: test/%.c | lib/debug
-	@echo CC -c $<
-	@${CC} ${CFLAGS} -g -pg -O0 -c -o $@ $<
 
 # libric object files 
 lib/ric/hname.o: src/ric/hname.c
@@ -154,6 +146,7 @@ lib/ric/tcp_client.o: src/ric/tcp_client.c
 lib/ric/tcp_server.o: src/ric/tcp_server.c
 lib/ric/udp_client.o: src/ric/udp_client.c
 lib/ric/udp_server.o: src/ric/udp_server.c
+lib/ric/util.o: src/ric/util.c
 
 # ric program object files
 lib/ric.o: src/ric.c include/ric.h include/util.h
@@ -166,13 +159,11 @@ lib/debug/ric/tcp_client.o: src/ric/tcp_client.c
 lib/debug/ric/tcp_server.o: src/ric/tcp_server.c
 lib/debug/ric/udp_client.o: src/ric/udp_client.c
 lib/debug/ric/udp_server.o: src/ric/udp_server.c
+lib/debug/ric/util.o: src/ric/util.c
 
 # ric program object files for debug
 lib/debug/ric.o: src/ric.c include/ric.h include/util.h
 lib/debug/util.o: src/util.c config.mk
-
-# test object files
-lib/debug/hname_test.o: test/hname_test.c include/ric.h
 
 
 # generate libric
@@ -181,7 +172,16 @@ lib/libric.a: ${LIBRICOBJ} | lib
 	@echo AR -o $@
 	@ar rcs $@ ${LIBRICOBJ}
 
+# generate libric with debug
+lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
+	@echo Making static libric with debug information
+	@echo AR -g -o $@
+	@ar rcs $@ ${LIBRICOBJ_DEBUG}
 
+
+#
+# BRANCH FOR RIC WITH OR WITHOUT DEBUG SYMBOLS
+#
 ifndef DEBUG
 
 ric: ${OBJ} ${LIBRIC}
@@ -193,27 +193,8 @@ else
 
 ric: ${OBJ_DEBUG} ${LIBRIC_DEBUG}
 	@echo Making ric
-	@echo CC -o $@
+	@echo CC -g -o $@
 	@${CC} -o $@ ${OBJ_DEBUG} ${LIBRIC_DEBUG} ${LDFLAGS} -pg
 
 endif
 
-# generate libric with debug
-lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
-	@echo Making static libric with debug information
-	@echo AR -o $@
-	@ar rcs $@ ${LIBRICOBJ_DEBUG}
-
-
-
-
-
-
-# generate tests
-hname_test: ${TEST_OBJ} ${LIBRIC_DEBUG}
-	@echo Making $@
-	@echo CC -o $@
-	@${CC} -o $@ ${TEST_OBJ} ${LIBRIC_DEBUG} ${LDFLAGS} -pg
-
-
-.PHONY: all clean dist install uninstall

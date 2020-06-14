@@ -23,17 +23,9 @@ int
 main(int argc, char *argv[]) {
 	int c;
 	char *dest = NULL, *port = NULL;
-	enum {
-		NONE,
-		HNAME,
-		NSLOOK,
-		UDP,
-		TCP
-	} mode = NONE;
-	enum {
-		CLIENT,
-		SERVER
-	} type = CLIENT;
+	int mode = NONE;
+	int type = CLIENT;
+	int interface = RIC_CLI;
 
 	/* TASK 8 and 12 */
 	struct sigaction act;
@@ -60,6 +52,7 @@ main(int argc, char *argv[]) {
 			case 'u': mode = UDP; break;
 			case 't': mode = TCP; break;
 			case 'l': type = SERVER; break;
+			case 'c': interface = RIC_NCURSES;break;
 			default:
 				usage();
 				exit(EXIT_FAILURE);
@@ -114,5 +107,6 @@ main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	(void)interface;
 	return EXIT_SUCCESS;
 }
