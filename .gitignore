@@ -7,7 +7,6 @@
 *.o
 lib/
 ric
-ricdbg
 *_test
 
 # exception

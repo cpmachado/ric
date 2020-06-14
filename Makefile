@@ -24,40 +24,32 @@ LIBRICSRC = \
 	src/ric/udp_client.c\
 	src/ric/udp_server.c
 
-
 # source files for ric
 SRC = \
 	src/ric.c\
 	src/util.c
 
-
 # source files for tests
 TEST_SRC= \
 	test/hname_test.c
+
 
 # object files for libric
 LIBRICOBJ = ${LIBRICSRC:src/ric/%.c=lib/ric/%.o}
 LIBRIC = lib/libric.a
 
-# object files for ric
-OBJ = ${SRC:src/%.c=lib/%.o}
-BIN = ric
-
 # object files for libric for testing
-# - has debug symbols
-# - has performance information
 LIBRICOBJ_DEBUG = ${LIBRICSRC:src/ric/%.c=lib/debug/ric/%.o}
 LIBRIC_DEBUG = lib/debug/libric.a
 
+# object files for ric
+OBJ_DEBUG = ${SRC:src/%.c=lib/debug/%.o}
+OBJ = ${SRC:src/%.c=lib/%.o}
+BIN = ric
 
 # object files for test
 TEST_OBJ = ${TEST_SRC:test/%.c=lib/debug/%.o}
 TEST_BIN = hname_test
-
-# object files for ric_debug
-OBJ_DEBUG = ${SRC:src/%.c=lib/debug/%.o}
-BIN_DEBUG = ricdbg
-
 
 
 # object and output files
@@ -143,18 +135,17 @@ lib/ric/%.o: src/ric/%.c | lib/ric
 	@echo CC -c $<
 	@${CC} ${CFLAGS} -fPIC -O3 -c -o $@ $<
 
-lib/debug/%.o: test/%.c | lib/debug
+lib/debug/%.o: src/%.c | lib/debug
 	@echo CC -c $<
-	@${CC} ${CFLAGS} -g -O0 -c -o $@ $<
+	@${CC} ${CFLAGS} -g -pg -O0 -c -o $@ $<
 
 lib/debug/ric/%.o: src/ric/%.c | lib/debug/ric
 	@echo CC -c $<
 	@${CC} ${CFLAGS} -fPIC -g -O0 -pg -c -o $@ $<
 
-lib/debug/%.o: src/%.c | lib/debug
+lib/debug/%.o: test/%.c | lib/debug
 	@echo CC -c $<
-	@${CC} ${CFLAGS} -g -O0 -c -o $@ $<
-
+	@${CC} ${CFLAGS} -g -pg -O0 -c -o $@ $<
 
 # libric object files 
 lib/ric/hname.o: src/ric/hname.c
@@ -168,21 +159,6 @@ lib/ric/udp_server.o: src/ric/udp_server.c
 lib/ric.o: src/ric.c include/ric.h include/util.h
 lib/util.o: src/util.c config.mk
 
-
-# generate libric
-lib/libric.a: ${LIBRICOBJ} | lib
-	@echo Making static libric
-	@echo AR -o $@
-	@ar rcs $@ ${LIBRICOBJ}
-
-
-# generate ric
-ric: ${OBJ} ${LIBRIC}
-	@echo Making ric
-	@echo CC -o $@
-	@${CC} -o $@ ${OBJ} ${LIBRIC} ${LDFLAGS}
-
-
 # libric object files for debug
 lib/debug/ric/hname.o: src/ric/hname.c
 lib/debug/ric/nslook.o: src/ric/nslook.c
@@ -191,11 +167,36 @@ lib/debug/ric/tcp_server.o: src/ric/tcp_server.c
 lib/debug/ric/udp_client.o: src/ric/udp_client.c
 lib/debug/ric/udp_server.o: src/ric/udp_server.c
 
-
 # ric program object files for debug
 lib/debug/ric.o: src/ric.c include/ric.h include/util.h
 lib/debug/util.o: src/util.c config.mk
 
+# test object files
+lib/debug/hname_test.o: test/hname_test.c include/ric.h
+
+
+# generate libric
+lib/libric.a: ${LIBRICOBJ} | lib
+	@echo Making static libric
+	@echo AR -o $@
+	@ar rcs $@ ${LIBRICOBJ}
+
+
+ifndef DEBUG
+
+ric: ${OBJ} ${LIBRIC}
+	@echo Making ric
+	@echo CC -o $@
+	@${CC} -o $@ ${OBJ} ${LIBRIC} ${LDFLAGS}
+
+else
+
+ric: ${OBJ_DEBUG} ${LIBRIC_DEBUG}
+	@echo Making ric
+	@echo CC -o $@
+	@${CC} -o $@ ${OBJ_DEBUG} ${LIBRIC_DEBUG} ${LDFLAGS} -pg
+
+endif
 
 # generate libric with debug
 lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
@@ -204,14 +205,8 @@ lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
 	@ar rcs $@ ${LIBRICOBJ_DEBUG}
 
 
-ricdbg: ${OBJ_DEBUG} ${LIBRIC_DEBUG}
-	@echo Making ric
-	@echo CC -o $@
-	@${CC} -o $@ ${OBJ_DEBUG} ${LIBRIC_DEBUG} ${LDFLAGS}
 
 
-# test object files
-lib/debug/hname_test.o: test/hname_test.c include/ric.h
 
 
 # generate tests
