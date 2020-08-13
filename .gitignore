@@ -3,25 +3,15 @@
 *.tar.gz
 
 # binaries
-*.exe
 *.o
-lib/
+*.a
 ric
-*_test
 
 # exception
 !ric/
 
-# tags
-tags
-
-# gprof
-gmon.out
-
-# gcov
-*.gcov
-*.gcda
-*.gcno
-
 # user config.h
 config.h
+
+# tags
+tags

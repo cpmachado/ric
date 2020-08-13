@@ -5,6 +5,11 @@
 .PHONY: all clean dist install uninstall
 .DEFAULT: all
 
+VERSION = 1.0
+LIBRIC_DIR = ./libric
+LIBRIC = ${LIBRIC_DIR}/libric.a
+INC = -I${LIBRIC_DIR}/include
+
 include config.mk
 
 
@@ -15,44 +20,18 @@ PKGFILES = \
 	README.md\
 	config.def.h\
 	config.mk\
+	doc\
+	include\
+	libric\
 	man\
-	src
+	ric.c\
+	util.c
 
 
-# source files for libric
-LIBRICSRC = \
-	src/ric/hname.c\
-	src/ric/nslook.c\
-	src/ric/tcp_client.c\
-	src/ric/tcp_server.c\
-	src/ric/udp_client.c\
-	src/ric/udp_server.c\
-	src/ric/util.c
-
-# source files for ric
-SRC = \
-	src/ric.c\
-	src/util.c
-
-
-# object files for libric
-LIBRICOBJ = ${LIBRICSRC:src/ric/%.c=lib/ric/%.o}
-LIBRIC = lib/libric.a
-
-# object files for libric for testing
-LIBRICOBJ_DEBUG = ${LIBRICSRC:src/ric/%.c=lib/debug/ric/%.o}
-LIBRIC_DEBUG = lib/debug/libric.a
-
-# object files for ric
-OBJ_DEBUG = ${SRC:src/%.c=lib/debug/%.o}
-OBJ = ${SRC:src/%.c=lib/%.o}
+SRC = ${wildcard *.c}
+OBJ = ${SRC:.c=.o}
+DEP = ${SRC:.c=.d}
 BIN = ric
-
-
-# object and output files
-OUTFILES =\
-	${BIN} lib gmon.out\
-	ric-${VERSION} ric-${VERSION}.tar.gz
 
 
 all: ${BIN}
@@ -61,18 +40,16 @@ all: ${BIN}
 
 clean:
 	@echo cleaning
-	@rm -rf ${OUTFILES}
+	@rm -rf ${OBJ} ${DEP} ${BIN} *.tar.gz
+	@make -C ${LIBRIC_DIR} clean
 
 
 options:
+	@echo "ric compilation flags"
 	@echo "CC        = ${CC}"
 	@echo "CFLAGS    = ${CFLAGS}"
 	@echo "CPPFLAGS  = ${CPPFLAGS}"
 	@echo "LDFLAGS   = ${LDFLAGS}"
-	@echo "OBJ       = ${OBJ}"
-	@echo "BIN       = ${BIN}"
-	@echo "LIBRICOBJ = ${LIBRICOBJ}"
-	@echo "LIBRIC    = ${LIBRIC}"
 
 
 dist: clean
@@ -103,98 +80,10 @@ config.h: config.def.h
 	cp config.def.h config.h
 
 
-# build out directories
-lib:
-	@echo Creating lib
-	@mkdir lib
-
-lib/ric:
-	@echo Creating lib/ric
-	@mkdir -p lib/ric
-
-lib/debug:
-	@echo Creating lib/debug
-	@mkdir -p lib/debug
-
-lib/debug/ric:
-	@echo Creating lib/debug/ric
-	@mkdir -p lib/debug/ric
-
-# rules for compilation
-
-lib/%.o: src/%.c config.h | lib
-	@echo CC -c $<
-	@${CC} ${CFLAGS} -O3 -c -o $@ $<
-
-lib/ric/%.o: src/ric/%.c | lib/ric
-	@echo CC -c $<
-	@${CC} ${CFLAGS} -fPIC -O3 -c -o $@ $<
-
-lib/debug/%.o: src/%.c | lib/debug
-	@echo CC -g -c $<
-	@${CC} ${CFLAGS} -g -pg -O0 -c -o $@ $<
-
-lib/debug/ric/%.o: src/ric/%.c | lib/debug/ric
-	@echo CC -g -c $<
-	@${CC} ${CFLAGS} -fPIC -g -O0 -pg -c -o $@ $<
-
-
-# libric object files 
-lib/ric/hname.o: src/ric/hname.c
-lib/ric/nslook.o: src/ric/nslook.c
-lib/ric/tcp_client.o: src/ric/tcp_client.c
-lib/ric/tcp_server.o: src/ric/tcp_server.c
-lib/ric/udp_client.o: src/ric/udp_client.c
-lib/ric/udp_server.o: src/ric/udp_server.c
-lib/ric/util.o: src/ric/util.c
-
-# ric program object files
-lib/ric.o: src/ric.c include/ric.h include/util.h
-lib/util.o: src/util.c config.mk
-
-# libric object files for debug
-lib/debug/ric/hname.o: src/ric/hname.c
-lib/debug/ric/nslook.o: src/ric/nslook.c
-lib/debug/ric/tcp_client.o: src/ric/tcp_client.c
-lib/debug/ric/tcp_server.o: src/ric/tcp_server.c
-lib/debug/ric/udp_client.o: src/ric/udp_client.c
-lib/debug/ric/udp_server.o: src/ric/udp_server.c
-lib/debug/ric/util.o: src/ric/util.c
-
-# ric program object files for debug
-lib/debug/ric.o: src/ric.c include/ric.h include/util.h
-lib/debug/util.o: src/util.c config.mk
-
-
 # generate libric
-lib/libric.a: ${LIBRICOBJ} | lib
-	@echo Making static libric
-	@echo AR -o $@
-	@ar rcs $@ ${LIBRICOBJ}
+${LIBRIC}:
+	make -C ${LIBRIC_DIR}
 
-# generate libric with debug
-lib/debug/libric.a: ${LIBRICOBJ_DEBUG} | lib/debug
-	@echo Making static libric with debug information
-	@echo AR -g -o $@
-	@ar rcs $@ ${LIBRICOBJ_DEBUG}
-
-
-#
-# BRANCH FOR RIC WITH OR WITHOUT DEBUG SYMBOLS
-#
-ifndef DEBUG
 
 ric: ${OBJ} ${LIBRIC}
-	@echo Making ric
-	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LIBRIC} ${LDFLAGS}
-
-else
-
-ric: ${OBJ_DEBUG} ${LIBRIC_DEBUG}
-	@echo Making ric
-	@echo CC -g -o $@
-	@${CC} -o $@ ${OBJ_DEBUG} ${LIBRIC_DEBUG} ${LDFLAGS} -pg
-
-endif
-
