@@ -1,8 +1,6 @@
 # See LICENSE for details
-# makefile for ric
 
-.POSIX:
-.PHONY: all clean dist install uninstall
+.PHONY: all clean
 .DEFAULT: all
 
 include config.mk
@@ -38,3 +36,6 @@ config.h: config.def.h
 
 libric.a: ${OBJ}
 	ar rcs $@ ${OBJ}
+
+
+-include ${DEP}

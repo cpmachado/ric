@@ -1,7 +1,6 @@
 # See LICENSE for details
 # makefile for ric
 
-.POSIX:
 .PHONY: all clean dist install uninstall
 .DEFAULT: all
 
@@ -35,7 +34,7 @@ BIN = ric
 
 
 all: ${BIN}
-	@echo "all built"
+	@echo "ric built"
 
 
 clean:
@@ -49,6 +48,7 @@ options:
 	@echo "CC        = ${CC}"
 	@echo "CFLAGS    = ${CFLAGS}"
 	@echo "CPPFLAGS  = ${CPPFLAGS}"
+	@echo "OUTPUT_OPTION = ${OUTPUT_OPTION}"
 	@echo "LDFLAGS   = ${LDFLAGS}"
 
 
@@ -75,15 +75,14 @@ uninstall:
 	@rm -f ${PREFIX}/bin/ric ${MANPREFIX}/man1/ric.1
 
 
-# configuration for ric
 config.h: config.def.h
 	cp config.def.h config.h
 
 
-# generate libric
 ${LIBRIC}:
 	make -C ${LIBRIC_DIR}
 
 
 ric: ${OBJ} ${LIBRIC}
-	@${CC} -o $@ ${OBJ} ${LIBRIC} ${LDFLAGS}
+
+-include ${DEP}

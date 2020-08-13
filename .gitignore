@@ -5,6 +5,7 @@
 # binaries
 *.o
 *.a
+*.d
 ric
 
 # exception
