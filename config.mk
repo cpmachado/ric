@@ -1,10 +1,11 @@
 # configuration of system
 # NOTE: Set version before including
 
+VERSION = 1.0.0
+
 # installation
 PREFIX ?= /usr/local
 MANPREFIX = ${PREFIX}/share/man
-
 
 CC       = gcc
 INC     += -I. -I./include -I/usr/include
@@ -14,4 +15,4 @@ CPPFLAGS =\
 	-D_BSD_SOURCE\
 	-D_DEFAULT_SOURCE\
 	-D_POSIX_C_SOURCE=200809L
-LDFLAGS =
+LDFLAGS = -lc
