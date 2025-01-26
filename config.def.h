@@ -8,5 +8,5 @@
 */
 
 /* NEW */
-#define DEFAULT_DEST  "localhost"
-#define DEFAULT_PORT  "1337"
+#define DEFAULT_DEST "localhost"
+#define DEFAULT_PORT "1337"
