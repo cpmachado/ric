@@ -29,7 +29,6 @@ PKGFILES = \
 
 SRC = ${wildcard *.c}
 OBJ = ${SRC:.c=.o}
-DEP = ${SRC:.c=.d}
 BIN = ric
 
 
@@ -39,7 +38,7 @@ all: ${BIN}
 
 clean:
 	@echo cleaning
-	@rm -rf ${OBJ} ${DEP} ${BIN} *.tar.gz
+	@rm -rf ${OBJ} ${BIN} *.tar.gz
 	@make -C ${LIBRIC_DIR} clean
 
 
@@ -48,7 +47,6 @@ options:
 	@echo "CC        = ${CC}"
 	@echo "CFLAGS    = ${CFLAGS}"
 	@echo "CPPFLAGS  = ${CPPFLAGS}"
-	@echo "OUTPUT_OPTION = ${OUTPUT_OPTION}"
 	@echo "LDFLAGS   = ${LDFLAGS}"
 
 
@@ -84,5 +82,3 @@ ${LIBRIC}:
 
 
 ric: ${OBJ} ${LIBRIC}
-
--include ${DEP}
