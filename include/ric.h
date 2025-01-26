@@ -20,4 +20,3 @@ void udp_server(char *dest, char *port);
 
 /* tcp_server: tcp echo server binds in dest:port, in src/ric/tcp_server.c */
 void tcp_server(char *dest, char *port);
-

@@ -4,26 +4,13 @@
 /* MACROS */
 
 /* mode macros */
-enum {
-	NONE,
-	HNAME,
-	NSLOOK,
-	UDP,
-	TCP
-};
+enum { NONE, HNAME, NSLOOK, UDP, TCP };
 
 /* type macros */
-enum {
-	CLIENT,
-	SERVER
-};
+enum { CLIENT, SERVER };
 
 /* interface macros */
-enum {
-	RIC_CLI,
-	RIC_NCURSES
-};
-
+enum { RIC_CLI, RIC_NCURSES };
 
 /* FUNCTION DECLARATIONS */
 
